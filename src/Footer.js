@@ -22,7 +22,7 @@ export default function Footer() {
                 </ul>
             </div>
             <div class="w-96 mt-1 float-right">
-                <p class="text-lg font-medium text-black dark:text-white">ProspectiveProgramming is a 501(c)(3) not-for-profit organization that vows to teach computer science fundamentals to kids throughout the world. Thank you for being a part of the movement!</p>
+                <p class="text-lg font-medium text-black dark:text-white">ProspectiveProgramming is a <i>501(c)(3)</i> not-for-profit organization that vows to teach computer science fundamentals to kids throughout the world. Thank you for being a part of the movement!</p>
             </div>
         </div>
     );

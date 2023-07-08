@@ -2,7 +2,7 @@ import React from "react";
 
 export default function Lesson(props) {
     let result = "";
-    if (typeof props.description === "string") {
+    if (typeof props.description === "string" && window.innerWidth > 1160) {
         if (props.description.substring(99, 100) === " ") {
             result = props.description.substring(0, 99);
         } else {
