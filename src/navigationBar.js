@@ -1,5 +1,6 @@
 'use client';
 import { Dropdown } from "flowbite-react";
+import { Link } from "react-router-dom";
 import DarkLogo from "./dark-logo.svg";
 import LightLogo from "./light-logo.svg";
 import React from "react";
@@ -31,13 +32,18 @@ export default function NavigationBar() {
                                 <a href="practice.html" className="block text-black dark:text-white hover:text-slate-800 dark:hover:text-slate-400 text-lg md:p-0 mt-4 p-4">Practice</a>
                             </li>
                             <li>
-                                <button id="toggle" data-dropdown-toggle="dropdownElements" className="flex items-center justify-between w-full dark:text-white hover:text-slate-800 dark:hover:text-slate-400 text-lg md:p-0 mt-4 p-4">Account<svg className="w-5 h-5 ml-1" aria-hidden="true" fill="white" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg></button>
+                                {/* <button id="toggle" data-dropdown-toggle="dropdownElements" className="flex items-center justify-between w-full dark:text-white hover:text-slate-800 dark:hover:text-slate-400 text-lg md:p-0 mt-4 p-4">Account<svg className="w-5 h-5 ml-1" aria-hidden="true" fill="white" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg></button>
                                 <div id="dropdownElements" className="hidden z-10 border-2 border-slate-100 dark:border-slate-600 bg-slate-200 dark:bg-slate-700 divide-y divide-gray-100 dark:divide-slate-500 rounded-lg shadow w-45">
                                     <ul className="py-2 text-small text-gray-800 dark:text-slate-400" aria-labelledby="toggle">
                                         <li>
-                                            <a href="login.html" className="text-left block px-2 py-1 hover:bg-gray-600 dark:hover:bg-gray-200hover:text-slate-800 dark:hover:text-slate-400">Log-in</a>
+                                            <Link to="/auth" className="text-left block px-2 py-1 hover:bg-gray-600 dark:hover:bg-gray-200hover:text-slate-800 dark:hover:text-slate-400">Log-in</Link>
                                         </li>
                                     </ul>
+                                </div> */}
+                                <div className="block text-black dark:text-white hover:text-slate-800 dark:hover:text-slate-400 text-lg md:p-0 mt-4 p-4">
+                                    <Dropdown inline label="Account">
+                                        <Dropdown.Item><Link to="/auth" className="text-left block px-2 py-1 hover:bg-gray-600 dark:hover:bg-gray-200hover:text-slate-800 dark:hover:text-slate-400">Log-in</Link></Dropdown.Item>
+                                    </Dropdown>
                                 </div>
                             </li>
                         </ul>
