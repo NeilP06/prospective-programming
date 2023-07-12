@@ -12,6 +12,11 @@ mongoose.connect('mongodb+srv://prospectiveprogramming:Cb94epc6@prospectiveprogr
             type: String,
             required: true,
         },
+        username: {
+            type: String,
+            required: true,
+            unique: true,
+        },
         email: {
             type: String,
             required: true,
@@ -19,7 +24,7 @@ mongoose.connect('mongodb+srv://prospectiveprogramming:Cb94epc6@prospectiveprogr
         },
         password: {
             type: String,
-            required: true
+            required: true,
         },
         date: {
             type: Date,
