@@ -17,8 +17,8 @@ export default function Footer() {
                     <span className="text-black dark:text-white font-mono mt-3.5">ProspectiveProgramming</span>
                 </div>
                 <ul class="text-lg ml-2 leading-9 text-blue-800 dark:text-blue-200">
-                    <li class="hover:underline"><a href="">Lessons</a></li>
-                    <li class="hover:underline"><a href="">Practice Problems</a></li>
+                    <li class="text-black dark:text-white"><b>Language:</b> English</li>
+                    <li class="hover:underline"><a href="">Account</a></li>
                 </ul>
             </div>
             <div class="w-96 mt-1 float-right">
