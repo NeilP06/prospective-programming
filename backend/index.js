@@ -63,4 +63,26 @@ app.post("/register", async (req, resp) => {
     }
 });
 
+app.post("/login", async (req, resp) => {
+    try {
+        const {username, password } = req.body;
+        const user = await User.findOne({username});
+        if (user) {
+            if (password === user.password) {
+                resp.json({ message: "Login was successful. Redirecting..." });
+                console.log("Log-in successful: " + user);
+            } else {
+                resp.status(401).json({ error: "Invalid credentials." });
+                console.log("Invalid password for user: " + user);
+            }
+        } else {
+            resp.status(404).json({ error: "User does not exist." });
+            console.log("User not found: " + user);
+        }
+    } catch (e) {
+        resp.status(500).json({ error: "Something went wrong, try again later." });
+        console.log("Log-in error");
+    }
+});
+
 app.listen(1000);

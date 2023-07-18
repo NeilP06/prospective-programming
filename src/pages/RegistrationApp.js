@@ -2,10 +2,11 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import React from "react";
 import Footer from "../Footer.js";
-import NavigationBar from "../navigationBar.js";
+import NavigationBar from "../NavigationBar.js";
 import Warning from "../Warning.js";
 
 export default function RegistrationApp() {
+  document.body.classList.add("bg-slate-300", "dark:bg-gray-900");
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -30,7 +31,6 @@ export default function RegistrationApp() {
     }
   }
   if (window.innerWidth > 800) {
-    document.body.classList.add("bg-slate-300", "dark:bg-gray-900");
     return (
       <div>
         <NavigationBar/>

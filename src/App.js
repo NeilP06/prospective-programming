@@ -1,7 +1,7 @@
 import Footer from "./Footer.js";
 import Greetings from "./Customization.js";
 import Lesson from "./Lesson.js";
-import NavigationBar from "./navigationBar.js";
+import NavigationBar from "./NavigationBar.js";
 import PracticeProblem from "./PracticeProblem.js";
 import Warning from "./Warning.js";
 
