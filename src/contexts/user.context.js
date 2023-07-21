@@ -1,56 +1,44 @@
-import { createContext, useState } from "react";
-import { App, Credentials } from "realm-web";
-import { APP_ID } from "../realm/constants";
+import { createContext, useContext, useState } from "react";
 
-const app = new App(APP_ID);
+// Create a context for user authentication
+const AuthContext = createContext();
 
-export const UserContext = createContext();
-
-export const UserProvider = ({ children }) => {
-    const [ user, setUser ] = useState(null);
-
-    const Login = async(email, password) => {
-        const credentials = Credentials.emailPassword(email, password);
-        const authUser = await app.logIn(credentials);
-        setUser(authUser);
-        return authUser;
-    }
-
-    const Signup = async(email, password) => {
-        try {
-            await app.emailPasswordAuth.registerUser(email, password);
-            return Login(email, password);
-        } catch (error) {
-            throw error;
-        }
-    }
-
-    const fetchUser = async() => {
-        // prevents default users...
-        if (!app.currentUser) {
-            return false;
-        }
-        try {
-            await app.currentUser.refreshCustomData();
-            setUser(app.currentUser);
-            return app.currentUser;
-        } catch (error) {
-            throw error;
-        }
-    }
-
-    const Logout = async() => {
-        if (!app.currentUser) {
-            return false;
-        }
-        try {
-            await app.currentUser.logOut();
-            setUser(null);
-            return true;
-        } catch (error) {
-            throw error;
-        }
-    }
-    return <UserContext.Provider value={{ user, setUser, fetchUser, Login, Signup, Logout }}>{children}</UserContext.Provider>;
+// Custom hook to use the AuthContext easily throughout your app
+export function useAuth() {
+  return useContext(AuthContext);
 }
 
+export function AuthProvider({ children }) {
+  const [user, setUser] = useState(null);
+
+  // Function to set the user after successful login
+  const login = (token) => {
+    localStorage.setItem("token", token); // Store the token in local storage
+    // You might want to decode the token here and extract user information if needed
+    // Set the user state accordingly
+    setUser({ /* Extract user info from the token if needed */ });
+  };
+
+  // Function to logout the user
+  const logout = () => {
+    localStorage.removeItem("token");
+    setUser(null);
+  };
+
+  const isLoggedIn = () => {
+    return !!localStorage.getItem("token");
+  };
+
+  const authContextValue = {
+    user,
+    login,
+    logout,
+    isLoggedIn,
+  };
+
+  return (
+    <AuthContext.Provider value={authContextValue}>
+      {children}
+    </AuthContext.Provider>
+  );
+}

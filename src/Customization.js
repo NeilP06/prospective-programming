@@ -9,8 +9,8 @@ export default function Greetings(props) {
         );
     } else {
         return (
-            <div>
-                <h2>Test!</h2>
+            <div className="mt-24">
+                <h2 className="ml-20 font-mono text-black dark:text-white font-bold text-6xl">Hello, user!</h2>
             </div>
         )
     }

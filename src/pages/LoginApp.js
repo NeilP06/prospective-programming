@@ -1,5 +1,4 @@
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import Footer from "../Footer.js";
 import NavigationBar from "../NavigationBar.js";
@@ -29,9 +28,11 @@ export default function LoginApp() {
                 }
             )
             if (!result.ok) {
-                console.log("Doesnt work.");
+                console.log("Authentication: there is a problem with user credentials.");
+                alert("Log-in failed: your username or password is incorrect.");
                 
             } else {
+                console.log("Authentication: user logged-in successfully.");
                 const data = await result.json();
                 alert(data.message);
                 setUsername("");
