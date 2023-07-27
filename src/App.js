@@ -1,3 +1,4 @@
+import { Analytics } from '@vercel/analytics/react';
 import { ClerkProvider, SignedIn, SignedOut } from "@clerk/clerk-react";
 import Footer from "./Footer.js";
 import Greetings from "./Customization.js";
@@ -19,6 +20,7 @@ export default function App() {
   if (window.innerWidth > 800) {
     return (
       <ClerkProvider publishableKey={key}>
+        <Analytics/>
         <div>
           <NavigationBar/>
           <Greetings name={username}/>
