@@ -1,9 +1,7 @@
 import { createContext, useContext, useState } from "react";
 
-// Create a context for user authentication
 const AuthContext = createContext();
 
-// Custom hook to use the AuthContext easily throughout your app
 export function useAuth() {
   return useContext(AuthContext);
 }
@@ -15,6 +13,7 @@ export function AuthProvider({ children }) {
   const login = (token) => {
     localStorage.setItem("token", token); // Store the token in local storage
     // You might want to decode the token here and extract user information if needed
+    console.log(token);
     // Set the user state accordingly
     setUser({ /* Extract user info from the token if needed */ });
   };
