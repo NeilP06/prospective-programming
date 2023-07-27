@@ -7,6 +7,7 @@ import React from "react";
 
 export default function NavigationBar() {
     var logo = "";
+    // test
     if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
         logo = LightLogo;
     } else {
