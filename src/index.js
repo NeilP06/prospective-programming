@@ -1,10 +1,9 @@
+import './index.css';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from './App';
-import LoginApp from "./pages/LoginApp.js";
 import RegistrationApp from "./pages/RegistrationApp.js";
-import { createBrowserRouter, RouterProvider, Route } from "react-router-dom";
 
 const router = createBrowserRouter([
   {
@@ -12,12 +11,9 @@ const router = createBrowserRouter([
     element: <App/>,
   },
   {
-    path: "signup",
-    element: <RegistrationApp/>,
-  }, {
     path: "login",
-    element: <LoginApp/>,
-  }
+    element: <RegistrationApp/>,
+  },
 ]); 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
