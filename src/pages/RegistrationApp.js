@@ -1,8 +1,8 @@
 import { ClerkProvider, SignedIn, SignIn, SignedOut } from "@clerk/clerk-react";
 import React from "react";
-import Footer from "../Footer.js";
-import NavigationBar from "../NavigationBar.js";
-import Warning from "../Warning.js";
+import Footer from "../elements/Footer.element.js";
+import NavigationBar from "../elements/NavigationBar.element.js";
+import Warning from "../elements/Warning.element.js";
 
 if (!process.env.REACT_APP_CLERK_PUBLISHABLE_KEY) {
   throw new Error(" no key ");
@@ -19,7 +19,9 @@ export default function RegistrationApp() {
           <p>Looks like a confusion on our part. You are already signed-in!</p>
         </SignedIn>
         <SignedOut>
-          <SignIn/>
+          <div class="mt-20 flex items-center justify-center">
+            <SignIn/>
+          </div>
         </SignedOut>
         <Footer/>
       </ClerkProvider>

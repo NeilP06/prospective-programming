@@ -1,5 +1,5 @@
-import DarkLogo from "./dark-logo.svg";
-import LightLogo from "./light-logo.svg";
+import DarkLogo from "../dark-logo.svg";
+import LightLogo from "../light-logo.svg";
 import React from "react";
 
 export default function Footer() {

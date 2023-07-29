@@ -1,11 +1,13 @@
-import { Analytics } from '@vercel/analytics/react';
+import { Analytics } from "@vercel/analytics/react";
+import { ArrowUpRight } from "lucide-react";
 import { ClerkProvider, SignedIn, SignedOut, useUser } from "@clerk/clerk-react";
-import Footer from "./Footer.js";
-import Greetings from "./Customization.js";
-import Lesson from "./Lesson.js";
-import NavigationBar from "./NavigationBar.js";
-import PracticeProblem from "./PracticeProblem.js";
-import Warning from "./Warning.js";
+import { Link } from "react-router-dom";
+import Footer from "./elements/Footer.element.js";
+import Greetings from "./elements/Customization.element.js";
+import Lesson from "./layouts/Lesson.button.js";
+import NavigationBar from "./elements/NavigationBar.element.js";
+import PracticeProblem from "./layouts/PracticeProblem.button.js";
+import Warning from "./elements/Warning.element.js";
 import React from "react";
 
 if (!process.env.REACT_APP_CLERK_PUBLISHABLE_KEY) {
@@ -65,7 +67,11 @@ function Content() {
       <SignedOut>
         <NavigationBar/>
         <p className="mt-24 ml-20 font-mono text-black dark:text-white font-bold text-5xl">Welcome to ProspectiveProgramming! 👏</p>
-          <h2>test</h2>
+        <p className="mt-4 ml-20 flex text-gray-800 dark:text-slate-200"><Link to="/login" class="flex justify-center text-blue-600">Log-in<ArrowUpRight class="mr-1 hover:text-blue-800" color="#1B64F1"/></Link>to get started or continue progress.</p>
+        <div className=" mt-20 ml-20 m-4 flex flex-row">
+          <h2>hi</h2>
+          <h3>hey</h3>
+        </div>
         <Footer/>
       </SignedOut>
     );

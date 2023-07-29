@@ -1,8 +1,8 @@
 'use client';
 import { SignedIn, SignedOut, UserButton } from "@clerk/clerk-react";
 import { Link } from "react-router-dom";
-import DarkLogo from "./dark-logo.svg";
-import LightLogo from "./light-logo.svg";
+import DarkLogo from "../dark-logo.svg";
+import LightLogo from "../light-logo.svg";
 import React from "react";
 
 export default function NavigationBar() {
