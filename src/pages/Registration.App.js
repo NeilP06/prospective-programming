@@ -1,4 +1,5 @@
-import { ClerkProvider, SignedIn, SignIn, SignedOut } from "@clerk/clerk-react";
+import { ClerkProvider, SignIn, SignedOut, useUser } from "@clerk/clerk-react";
+import { useNavigate } from "react-router-dom";
 import React from "react";
 import Footer from "../elements/Footer.element.js";
 import NavigationBar from "../elements/NavigationBar.element.js";
@@ -11,26 +12,33 @@ const key = process.env.REACT_APP_CLERK_PUBLISHABLE_KEY;
 
 export default function RegistrationApp() {
   document.body.classList.add("bg-slate-300", "dark:bg-gray-900");
-  if (window.innerWidth > 800) {
+  return (
+    <ClerkProvider publishableKey={key}>
+      <Content/>
+    </ClerkProvider>
+  )
+}
+
+function Content() {
+  const { user }  = useUser();
+  const navigate = useNavigate();
+  if (!user && window.innerWidth > 800) {
     return (
-      <ClerkProvider publishableKey={key}>
+      <div>
         <NavigationBar/>
-        <SignedIn>
-          <p>Looks like a confusion on our part. You are already signed-in!</p>
-        </SignedIn>
         <SignedOut>
           <div class="mt-20 flex items-center justify-center">
             <SignIn/>
           </div>
         </SignedOut>
         <Footer/>
-      </ClerkProvider>
-    );
+      </div>
+    );    
+  } else if (user && window.innerWidth > 800) {
+    navigate("/");
   } else {
     return (
-      <div>
-        <Warning/>
-      </div>
+      <Warning/>
     );
   }
 }
