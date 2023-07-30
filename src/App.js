@@ -17,7 +17,6 @@ if (!process.env.REACT_APP_CLERK_PUBLISHABLE_KEY) {
 const key = process.env.REACT_APP_CLERK_PUBLISHABLE_KEY;
 
 export default function App() {
-  console.log(window.innerWidth);
   document.body.classList.add("bg-slate-300", "dark:bg-gray-900");
   if (window.innerWidth > 800) {
     return (

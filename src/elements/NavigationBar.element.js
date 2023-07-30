@@ -26,7 +26,7 @@ export default function NavigationBar() {
                                 <Link to="/" className="block text-black bg-blue-700 text-lg p-4 md:p-0 mt-4 rounded md:bg-transparent md:text-blue-700 md:dark:text-blue-200 dark:bg-blue-600 md:dark:bg-transparent">Home</Link>
                             </li>
                             <li>
-                                <a href="lessons.html" className="block text-black dark:text-white hover:text-slate-800 dark:hover:text-slate-400 text-lg md:p-0 mt-4 p-4">Lessons</a>
+                            <Link to="/lessons" className="block text-black dark:text-white hover:text-slate-800 dark:hover:text-slate-400 text-lg md:p-0 mt-4 p-4">Lessons</Link>
                             </li>
                             <li>
                                 <a href="practice.html" className="block text-black dark:text-white hover:text-slate-800 dark:hover:text-slate-400 text-lg md:p-0 mt-4 p-4">Practice</a>
