@@ -3,7 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from './App';
-import LessonsApp from "./layouts/Lesson.layout.js";
+import LessonsExample from "./pages/Lesson.App.js";
 // import PracticeApp from "./pages/Practice.App.js";
 import RegistrationApp from "./pages/Registration.App.js";
 
@@ -18,7 +18,7 @@ const router = createBrowserRouter([
   },
   {
     path: "lessons",
-    element: <LessonsApp/>
+    element: <LessonsExample/>
   },
   // {
   //   path: "practice",
