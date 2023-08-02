@@ -22,6 +22,7 @@ export default function RegistrationApp() {
 function Content() {
   const { user }  = useUser();
   const navigate = useNavigate();
+
   if (!user && window.innerWidth > 800) {
     return (
       <div>

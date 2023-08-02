@@ -2,12 +2,13 @@ import 'ace-builds/src-noconflict/ace';
 import "ace-builds/src-noconflict/ext-language_tools";
 import "ace-builds/src-noconflict/mode-java";
 import "ace-builds/src-noconflict/theme-github";
+import "ace-builds/src-noconflict/theme-solarized_dark";
 import "ace-builds/src-noconflict/theme-twilight";
 import { ClerkProvider } from "@clerk/clerk-react";
 import AceEditor from "react-ace";
 import Footer from "../elements/Footer.element.js";
 import NavigationBar from "../elements/NavigationBar.element.js";
-import React, { useState, useEffect} from "react";
+import React, { useEffect, useState} from "react";
 const { Configuration, OpenAIApi } = require("openai");
 
 // checks if the API key for Clerk is not null before initializing the key:
@@ -26,7 +27,6 @@ export default function LessonModule(props) {
     document.body.classList.add("bg-slate-300", "dark:bg-gray-900");    
     // initializes a variable for a sticky state to the <IDE/> module & its children:
     const [ isSticky, setStickyness ] = useState(true);  
-    // const prompt = `public static void forLoops() {\n  for (int i = 0; i < 10; i++) {\n    // fill code here\n  }\n}`;
     // gives cases for sticky vs. relative positioning for the sitcky-state variable.
     useEffect(() => {
         const handleScroll = () => {
@@ -47,13 +47,13 @@ export default function LessonModule(props) {
             <div className="mt-20 flex flex-row">
                 <div className="w-1/2">
                     <p className="mb-12 ml-20 mr-5 font-bold text-6xl text-black dark:text-white">✨ {props.lessonId} {props.lessonName}</p>
-                    <p className="ml-20 mr-20 font-md text-lg leading-9 text-gray-800 dark:text-slate-200">{props.lessonContent}</p>
+                    <p className="ml-20 mr-20 font-md text-lg leading-9 text-gray-800 dark:text-slate-200"><TextSyntax description={props.lessonContent}/></p>
                 </div>
                 <div className="mt-24 mb-40 w-1/2">
                     <div className={`flex justify-center ${isSticky ? "sticky top-24 right-10" : ""}`}>
                         <div>
                             <p className="mb-1 mr-20 font-semibold text-3xl text-gray-700 dark:text-slate-300">🤔 Lesson Problem</p>
-                            <p className="mb-5 mr-20 font-md text-md text-gray-600 dark:text-slate-400">Click the "Check" button when done.</p>
+                            <p className="mb-5 mr-20 font-md text-md text-gray-600 dark:text-slate-400">Click the "Check" button when done. Wait for results to load.</p>
                             <IDE expected={props.expected} prompt={props.prompt} className="w-full"/>
                         </div>
                     </div>
@@ -114,7 +114,7 @@ function IDE(props) {
  */
 function CheckCode(props) {
     // variables for OpenAI feedback to export:
-    const [ correct, setCorrect ] = useState(true);
+    const [ correct, setCorrect ] = useState(null);
     const [ hint, setHint ] = useState("");
     // sets-up OpenAI configuration:
     const config = new Configuration({ apiKey: "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" });
@@ -153,7 +153,7 @@ function CheckCode(props) {
                     },
                     {
                         role: "system",
-                        content: `You are a computer science professor who is grading my code, and you grade with strict conditions (even one little syntax error is pointed out). You have this unit test case: ${props.expected} that should come from this code. In addition, please send the feedback in this JSON format: "correct", a true/false value if the code matches the unit test, and "hint" which gives the user a hint if their code is wrong (otherwise initialize this to an empty string). Please do not give any response other than the JSON.`,
+                        content: `You are a computer science professor who is grading my Java code, and you grade with strict conditions (even one little syntax error is pointed out). You have this unit test case: ${props.expected} that should come from this code. In addition, please send the feedback in this JSON format: "correct", a true/false value if the code matches the unit test, and "hint" which gives the user a hint if their code is wrong (otherwise initialize this to an empty string). Remember to ignore all comments. Please do not give any response other than the JSON.`,
                     },
                 ],
                 temperature: 0.1
@@ -185,13 +185,106 @@ function CheckCode(props) {
  */
 function Feedback(props) {
     // checks if user code is incorrect before creating module:
-    if (!props.correct) {
+    if (props.correct === false) {
         return (
-            <div className="px-5 py-2 mt-5 mr-10 w-96 border-2 border-amber-500 rounded-md bg-amber-700">
-            <p className="text-amber-500">⚠️ {props.hint}</p>
+            <div className="px-7 py-2 mt-5 mr-10 w-[500px] border-2 border-amber-500 rounded-md bg-amber-700">
+                <p className="text-amber-500">⚠️ {props.hint}</p>
             </div>
         );
-    } else {
-        return null;
+    } else if (props.correct === true) {
+        return (
+            <div className="px-7 py-2 mt-5 mr-10 w-44 border-2 border-emerald-500 rounded-md bg-emerald-700">
+                <p className="text-emerald-500">✅ Success!</p>
+            </div>
+        );
     }
+}
+
+
+/**
+ * @param {description} props 
+ * @returns <TextSyntax/>
+ * --> creates module that formats raw lesson content text.
+ */
+function TextSyntax(props) {
+    // initializes variables that will later be used for formatting purposes:
+    const [text, setText] = useState([]);
+    // preset IDE theme for devices with light-mode enabled:
+    var editorTheme = "github";
+    // adjusts IDE theme to account for devices with dark-mode:
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        editorTheme = "twilight";
+    }
+    // formats inputted text with line breaks and <AceEditor/> modules:
+    useEffect(() => {
+        if (typeof props.description === "string") {
+            // replaces all tildes with a line break:
+            const processedDescription = props.description.replace(/~/g, '<br/>');
+            // splits all the texts through backticks:
+            const segments = processedDescription.split("`");
+            /**
+             * @param {segment, index}
+             * @return 
+             * --> processes a special line of code and renders it into a IDE display.
+             */
+            const processedSegments = segments.map((segment, index) => {
+                // if the index is odd, it renders an <AceEditor/> module with the segment code:
+                if (index % 2 === 1) {
+                    return (
+                        <AceEditor
+                            className="mt-3 mb-3 mr-10 rounded-sm border-2 border-white dark:border-gray-800"
+                            fontSize={14}
+                            height={calculateEditorHeight(segment)}
+                            highlightActiveLine={false}
+                            key={index}
+                            mode="java"
+                            name="java-editor"
+                            readOnly={true}
+                            setOptions={{
+                                enableBasicAutocompletion: false,
+                                enableLiveAutocompletion: false,
+                                enableSnippets: false,
+                                showLineNumbers: true,
+                                tabSize: 2,
+                            }}
+                            showGutter={true}
+                            showPrintMargin={false}
+                            theme={editorTheme}
+                            width="100%"
+                            value={segment}
+                        />
+                    );
+                } else {
+                    /**
+                     * @note find another line-break-checking method to prevent future problems.
+                     * --> returns formatted text excluding the editors.
+                     */
+                    return (
+                        <span key={index} dangerouslySetInnerHTML={{__html: segment}}/>
+                    );
+                }
+            });
+            // updates the text with the separated text segments for future use:
+            setText(processedSegments);
+        }
+    }, [editorTheme, props.description]);
+    /** 
+     * @param {*} content 
+     * @returns 
+     * --> calculates the height for a particular <AceEditor/> module based upon # of lines.
+     */
+    const calculateEditorHeight = (content) => {
+        // calculates the # of lines inside the IDE content:
+        const numLines = content.split("\n").length;
+        // preset line height is set at 25:
+        const lineHeight = 22;
+        // returns the height based on the # of lines + line height:
+        return `${numLines * lineHeight}px`;
+    };
+    // returns the formatted text back to the parent function:
+    return (
+        <div>
+            {text}
+        </div>
+    );
 }

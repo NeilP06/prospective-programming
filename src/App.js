@@ -4,6 +4,7 @@ import { ClerkProvider, SignedIn, SignedOut, useUser } from "@clerk/clerk-react"
 import { Link } from "react-router-dom";
 import Footer from "./elements/Footer.element.js";
 import Greetings from "./elements/Greetings.element.js";
+import Initialization from "./db/Initialization.db.js";
 import LargeButton from "./layouts/LargeButton.button.js";
 import Lesson from "./layouts/Lesson.button.js";
 import NavigationBar from "./elements/NavigationBar.element.js";
@@ -35,12 +36,13 @@ export default function App() {
 }
 
 function Content() {
-  const { user } = useUser();
+  const { user } = useUser(); 
   const desc = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
   const login = <Link to="/login" class="flex justify-center text-blue-600">Log-in<ArrowUpRight class="mr-1 hover:text-blue-800" color="#1B64F1"/></Link>;
   if (user) {
     return (
       <SignedIn>
+        <Initialization/>
         <NavigationBar/>
           <Greetings condition="registered" name={user.firstName}/>
           <div className="mt-24">
