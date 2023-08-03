@@ -9,6 +9,7 @@ import AceEditor from "react-ace";
 import Footer from "../elements/Footer.element.js";
 import NavigationBar from "../elements/NavigationBar.element.js";
 import React, { useEffect, useState} from "react";
+import Warning from "../elements/Warning.element.js";
 const { Configuration, OpenAIApi } = require("openai");
 
 // checks if the API key for Clerk is not null before initializing the key:
@@ -24,7 +25,7 @@ const key = process.env.REACT_APP_CLERK_PUBLISHABLE_KEY;
  */
 export default function LessonModule(props) {
     // adjusts background theme for system preference:
-    document.body.classList.add("bg-slate-300", "dark:bg-gray-900");    
+    document.body.classList.add("bg-slate-300", "dark:bg-gray-900");
     // initializes a variable for a sticky state to the <IDE/> module & its children:
     const [ isSticky, setStickyness ] = useState(true);  
     // gives cases for sticky vs. relative positioning for the sitcky-state variable.
@@ -40,28 +41,34 @@ export default function LessonModule(props) {
             window.removeEventListener("scroll", handleScroll);
         }
     }, []);   
-    // returns <LessonModule/> page:   
-    return (
-        <ClerkProvider publishableKey={key}>
-            <NavigationBar/>
-            <div className="mt-20 flex flex-row">
-                <div className="w-1/2">
-                    <p className="mb-12 ml-20 mr-5 font-bold text-6xl text-black dark:text-white">✨ {props.lessonId} {props.lessonName}</p>
-                    <p className="ml-20 mr-20 font-md text-lg leading-9 text-gray-800 dark:text-slate-200"><TextSyntax description={props.lessonContent}/></p>
-                </div>
-                <div className="mt-24 mb-40 w-1/2">
-                    <div className={`flex justify-center ${isSticky ? "sticky top-24 right-10" : ""}`}>
-                        <div>
-                            <p className="mb-1 mr-20 font-semibold text-3xl text-gray-700 dark:text-slate-300">🤔 Lesson Problem</p>
-                            <p className="mb-5 mr-20 font-md text-md text-gray-600 dark:text-slate-400">Click the "Check" button when done. Wait for results to load.</p>
-                            <IDE expected={props.expected} prompt={props.prompt} className="w-full"/>
+    // returns <LessonModule/> page if page width is more than 900 pixels:   
+    if (window.innerWidth > 900) {
+        return (
+            <ClerkProvider publishableKey={key}>
+                <NavigationBar/>
+                <div className="mt-20 flex flex-row">
+                    <div className="w-1/2">
+                        <p className="mb-12 ml-20 mr-5 font-bold text-6xl text-black dark:text-white">✨ {props.lessonId} {props.lessonName}</p>
+                        <p className="ml-20 mr-20 font-md text-lg leading-9 text-gray-800 dark:text-slate-200"><TextSyntax description={props.lessonContent}/></p>
+                    </div>
+                    <div className="mt-24 mb-40 w-1/2">
+                        <div className={`flex justify-center ${isSticky ? "sticky top-24 right-10" : ""}`}>
+                            <div>
+                                <p className="mb-1 mr-20 font-semibold text-3xl text-gray-700 dark:text-slate-300">🤔 Lesson Problem</p>
+                                <p className="mb-5 mr-20 font-md text-md text-gray-600 dark:text-slate-400">Click the "Check" button when done. Wait for results to load.</p>
+                                <IDE expected={props.expected} prompt={props.prompt} className="w-full"/>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <Footer/>
-        </ClerkProvider>
-    );
+                <Footer/>
+            </ClerkProvider>
+        );
+    } else {
+        return (
+            <Warning/>
+        );
+    }
 }
 
 /** 

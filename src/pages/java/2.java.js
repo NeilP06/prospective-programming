@@ -1,10 +1,10 @@
 import { createClient } from "@supabase/supabase-js";
-import LessonModule from "../layouts/Lesson.layout.js";
+import LessonModule from "../../layouts/Lesson.layout.js";
 import React, { useEffect, useState } from "react";
 
 const supabase = createClient(process.env.REACT_APP_SUPABASE_URL, process.env.REACT_APP_SUPABASE_KEY);
 
-export default function LessonExample() {
+export default function JavaTwo() {
     const [ expected, setExpected ] = useState("");
     const [ lessonContent, setLessonContent ] = useState("");
     const [ lessonId, setLessonId ] = useState("");
@@ -12,7 +12,7 @@ export default function LessonExample() {
     const [ prompt, setPrompt ] = useState("");
     useEffect(() => {
         const loadData = async(e) => {
-            const { data, error} = await supabase.from("java-lessons").select().eq("id", 1);
+            const { data, error} = await supabase.from("java-lessons").select().eq("id", 2);
             if (error) {
                 throw new Error("An error occured in relation to Supabase fetch.");
             }
