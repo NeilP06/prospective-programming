@@ -4,17 +4,18 @@ import "ace-builds/src-noconflict/mode-java";
 import "ace-builds/src-noconflict/theme-github";
 import "ace-builds/src-noconflict/theme-solarized_dark";
 import "ace-builds/src-noconflict/theme-twilight";
-import { ClerkProvider } from "@clerk/clerk-react";
 import AceEditor from "react-ace";
+import { createClient } from "@supabase/supabase-js";
+import { useUser } from "@clerk/clerk-react";
 import Footer from "../elements/Footer.element.js";
 import NavigationBar from "../elements/NavigationBar.element.js";
 import React, { useEffect, useState} from "react";
 import Warning from "../elements/Warning.element.js";
 const { Configuration, OpenAIApi } = require("openai");
+const supabase = createClient(process.env.REACT_APP_SUPABASE_URL, process.env.REACT_APP_SUPABASE_KEY);
 
-// checks if the API key for Clerk is not null before initializing the key:
 if (!process.env.REACT_APP_CLERK_PUBLISHABLE_KEY) {
-    throw new Error("An error occured in relation to Clerk: Clerk is not connecting to the application.");
+    throw new Error("An error occured in relation to Clerk: no key found.");
 }
 const key = process.env.REACT_APP_CLERK_PUBLISHABLE_KEY;
 
@@ -44,7 +45,7 @@ export default function LessonModule(props) {
     // returns <LessonModule/> page if page width is more than 900 pixels:   
     if (window.innerWidth > 900) {
         return (
-            <ClerkProvider publishableKey={key}>
+            <div>
                 <NavigationBar/>
                 <div className="mt-20 flex flex-row">
                     <div className="w-1/2">
@@ -62,7 +63,7 @@ export default function LessonModule(props) {
                     </div>
                 </div>
                 <Footer/>
-            </ClerkProvider>
+            </div>
         );
     } else {
         return (
@@ -191,6 +192,7 @@ function CheckCode(props) {
  * --> creates module that displays feedback to the user.
  */
 function Feedback(props) {
+    const { user } = useUser();
     // checks if user code is incorrect before creating module:
     if (props.correct === false) {
         return (
@@ -199,6 +201,15 @@ function Feedback(props) {
             </div>
         );
     } else if (props.correct === true) {
+        const sendDataToParent = () => {
+            // Example data to send to the parent
+            const dataToSend = "Some data from Feedback component";
+            // Check if the callback function is defined and then call it
+            if (props.onSendData && typeof props.onSendData === "function") {
+              props.onSendData(dataToSend);
+            }
+          };
+        sendDataToParent();
         return (
             <div className="px-7 py-2 mt-5 mr-10 w-44 border-2 border-emerald-500 rounded-md bg-emerald-700">
                 <p className="text-emerald-500">✅ Success!</p>

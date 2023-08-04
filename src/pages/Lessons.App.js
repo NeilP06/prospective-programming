@@ -57,7 +57,7 @@ function Content() {
          * --> fetches unformatted data from the database.
          */
         async function fetchData(userId) {
-            const { data, error } = await supabase.from("users").select("java-1, java-2").eq("userId", userId);
+            const { data, error } = await supabase.from("users").select("java_one, java_two").eq("userId", userId);
             // checks if data is null before returning it:
             if (error) {
                 throw new Error("An error occurred in relation to Supabase fetch: Java data is not loading.");
@@ -70,7 +70,7 @@ function Content() {
                 if (data && data.length > 0) {
                     // TODO: make this dynamic...
                     const combinedData = data.reduce((result, item) => {
-                        result.push(item["java-1"], item["java-2"]);
+                        result.push(item["java_one"], item["java_two"]);
                         return result;
                     }, []);
                     setJavaData(combinedData);
@@ -135,7 +135,7 @@ function Content() {
         return (
             <SignedIn>
                 <NavigationBar/>
-                <p className="mt-20 mb-5 ml-20 font-semibold text-3xl lg:text-4xl text-black dark:text-white">Uncompleted Lessons</p>
+                <p className="mt-20 mb-10 ml-20 font-semibold text-3xl lg:text-4xl text-black dark:text-white">📝 Uncompleted Lessons</p>
                 <div class="ml-20 flex flex-row">
                     {fetchData}
                 </div>
