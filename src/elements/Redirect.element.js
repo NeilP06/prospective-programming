@@ -16,7 +16,7 @@ export default function Redirect(props) {
     }
     return (
         <div class="flex flex-col items-center justify-center mt-32">
-            <div class="flex items-center w-1/4 px-3 py-7 rounded bg-slate-200 dark:bg-gray-800 border-2 border-white dark:border-gray-600">
+            <div class="flex items-center w-1/2 px-3 py-7 rounded bg-slate-200 dark:bg-gray-800 border-2 border-white dark:border-gray-600">
                 <p class="text-center text-lg font-medium text-black dark:text-white">Redirecting to {props.redirection}...</p>
             </div>
             <div class="flex flex-row items-center justify-center mt-5">
