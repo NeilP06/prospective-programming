@@ -5,19 +5,11 @@ import "ace-builds/src-noconflict/theme-github";
 import "ace-builds/src-noconflict/theme-solarized_dark";
 import "ace-builds/src-noconflict/theme-twilight";
 import AceEditor from "react-ace";
-import { createClient } from "@supabase/supabase-js";
-import { useUser } from "@clerk/clerk-react";
 import Footer from "../elements/Footer.element.js";
 import NavigationBar from "../elements/NavigationBar.element.js";
 import React, { useEffect, useState} from "react";
 import Warning from "../elements/Warning.element.js";
 const { Configuration, OpenAIApi } = require("openai");
-const supabase = createClient(process.env.REACT_APP_SUPABASE_URL, process.env.REACT_APP_SUPABASE_KEY);
-
-if (!process.env.REACT_APP_CLERK_PUBLISHABLE_KEY) {
-    throw new Error("An error occured in relation to Clerk: no key found.");
-}
-const key = process.env.REACT_APP_CLERK_PUBLISHABLE_KEY;
 
 /**
  * @param {expected, lessonContent, lessonId, lessonName, prompt } props 
@@ -42,6 +34,15 @@ export default function LessonModule(props) {
             window.removeEventListener("scroll", handleScroll);
         }
     }, []);   
+    /**
+     * @param {*} data 
+     * --> callback function to receive data from child.
+     */
+    const handleParentData = (data) => {
+        if (props.onSendData && typeof props.onSendData === "function") {
+            props.onSendData(data);
+        }
+    };
     // returns <LessonModule/> page if page width is more than 900 pixels:   
     if (window.innerWidth > 900) {
         return (
@@ -57,7 +58,7 @@ export default function LessonModule(props) {
                             <div>
                                 <p className="mb-1 mr-20 font-semibold text-3xl text-gray-700 dark:text-slate-300">🤔 Lesson Problem</p>
                                 <p className="mb-5 mr-20 font-md text-md text-gray-600 dark:text-slate-400">Click the "Check" button when done. Wait for results to load.</p>
-                                <IDE expected={props.expected} prompt={props.prompt} className="w-full"/>
+                                <IDE expected={props.expected} prompt={props.prompt} onSendData={handleParentData} className="w-full"/>
                             </div>
                         </div>
                     </div>
@@ -86,6 +87,16 @@ function IDE(props) {
     if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
         editorTheme = "twilight";
     }
+    /**
+     * @param {*} data 
+     * --> callback function to receive data from child.
+     */
+    const handleParentData = (data) => {
+        console.log("Data received by the <IDE/> module:", data);
+        if (props.onSendData && typeof props.onSendData === "function") {
+            props.onSendData(data);
+        }
+    };
     // returns <AceEditor/> + <CheckCode/> modules:
     return (
         <div>
@@ -97,6 +108,7 @@ function IDE(props) {
                 mode="java"
                 name="java-editor"
                 onChange={(newContent) => setEditorContent(newContent)}
+                onSendData={handleParentData}
                 placeholder="Type your code here."
                 setOptions={{
                     enableBasicAutocompletion: false,
@@ -110,7 +122,7 @@ function IDE(props) {
                 theme={editorTheme}
                 value={editorContent}
             />
-            <CheckCode code={editorContent} expected={props.expected}/>
+            <CheckCode code={editorContent} expected={props.expected} onSendData={handleParentData}/>
         </div>
     );   
 }
@@ -175,13 +187,23 @@ function CheckCode(props) {
     }
     // gives 2000ms delay to each OpenAI request:
     const throttledSubmit = throttle(handleSubmit, 2000);
+    /**
+     * @param {*} data 
+     * --> callback function to receive data from child.
+     */
+    const handleParentData = (data) => {
+        console.log("Data received by the <CheckCode/> module:", data);
+        if (props.onSendData && typeof props.onSendData === "function") {
+            props.onSendData(data);
+        }
+    };
     // returns <CheckCode/> + <Feedback/> modules:
     return (
         <div>
             <form onSubmit={throttledSubmit}>
                 <button type="submit" className="mt-3 px-4 py-2 rounded-lg font-semibold text-black dark:text-white bg-green-500 hover:bg-green-700 duration-200">Check</button>
             </form>
-            <Feedback correct={correct} hint={hint}/>
+            <Feedback correct={correct} hint={hint} onSendData={handleParentData}/>
         </div>
     );
 }
@@ -192,7 +214,16 @@ function CheckCode(props) {
  * --> creates module that displays feedback to the user.
  */
 function Feedback(props) {
-    const { user } = useUser();
+    /**
+     * @param {*} data 
+     * --> callback function to receive data from child.
+     */
+    const handleParentData = (data) => {
+        console.log("Data received by the <Feedback/> module:", data);
+        if (props.onSendData && typeof props.onSendData === "function") {
+            props.onSendData(data);
+        }
+    };
     // checks if user code is incorrect before creating module:
     if (props.correct === false) {
         return (
@@ -201,14 +232,11 @@ function Feedback(props) {
             </div>
         );
     } else if (props.correct === true) {
+        // creates the chain of callbacks to send data back to parent:
         const sendDataToParent = () => {
-            // Example data to send to the parent
-            const dataToSend = "Some data from Feedback component";
-            // Check if the callback function is defined and then call it
-            if (props.onSendData && typeof props.onSendData === "function") {
-              props.onSendData(dataToSend);
-            }
-          };
+            const dataToSend = "Successful code submission";
+            handleParentData(dataToSend);
+        };
         sendDataToParent();
         return (
             <div className="px-7 py-2 mt-5 mr-10 w-44 border-2 border-emerald-500 rounded-md bg-emerald-700">
@@ -217,7 +245,6 @@ function Feedback(props) {
         );
     }
 }
-
 
 /**
  * @param {description} props 
