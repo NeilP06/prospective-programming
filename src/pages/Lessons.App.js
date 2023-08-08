@@ -85,6 +85,8 @@ function Content() {
     useEffect(() => {
         // variable is used to avoid state updates on unmounted components:
         let isSubscribed = true;
+        // variable is used to create rows to organize lesson modules:
+        let lessonRows = [];
         // fetches lessons from the database:
         const fetchLessons = async () => {
             let fetchedLessons = [];
@@ -94,15 +96,60 @@ function Content() {
                 throw new Error("An error occurred in relation to Supabase fetch: Java lessons data is not loading.");
             }
             // fetches data from a for loop:
-            for (let i = data.length - 1; i >= 0; i--) {
+            for (let i = 0; i < data.length; i++) {
                 if (javaData[i] === "Not Started" || javaData[i] === "In Progress") {
-                    // appends data to temporary variable:
-                    console.log(data[i].id);
-                    fetchedLessons.push(
-                        <Link to={data[i].link}><Lesson lessonId={data[i].lessonId} lessonName={data[i].name} shortDescription={data[i].shortDescription} status={javaData[i]}/></Link>
-                        
+                    // fetches id from data:
+                    const id = parseInt(data[i].id - 1);
+                    // saves data to temporary variable:
+                    const lessonComponent = (
+                        <Link key={data[id].lessonId} to={data[id].link}>
+                            <Lesson lessonId={data[id].lessonId} lessonName={data[id].name} shortDescription={data[id].shortDescription} status={javaData[id]}/>
+                        </Link>
                     );
+                    // appends variable into the array/row:
+                    lessonRows.push(lessonComponent);
+                    // checks if window's width is 1200px to ensure no margin issues:
+                    if (window.innerWidth > 1200) {
+                        // every three lessons is a row, otherwise a new row is created:
+                        if (lessonRows.length % 3 === 0) {
+                            // saves row as a temporary variable:
+                            const row = (
+                                <div key={`row-${lessonRows.length}`} className="mt-10 flex flex-row">
+                                    {lessonRows}
+                                </div>
+                            );
+                            // clears row to be re-used:
+                            lessonRows = [];
+                            // pushes the variable into the main 2D-array:
+                            fetchedLessons.push(row);
+                        }
+                    } else {
+                        // if <1200px, only two lessons will be in a row:
+                        if (lessonRows.length % 2 === 0) {
+                            // saves row as a temporary variable:
+                            const row = (
+                                <div key={`row-${lessonRows.length}`} className="mt-10 flex flex-row">
+                                    {lessonRows}
+                                </div>
+                            );
+                            // clears row to be re-used:
+                            lessonRows = [];
+                            // pushes the variable into the main 2D-array:
+                            fetchedLessons.push(row);    
+                        }                    
+                    }
                 }
+            }
+            // appends any remaining lessons that did not fill a complete row:
+            if (lessonRows.length > 0) {
+                // saves data as a temporary variable:
+                const row = (
+                    <div key={`row-${lessonRows.length}`} className="mt-10 flex flex-row">
+                        {lessonRows}
+                    </div>
+                );
+                // pushes the temporary variable:
+                fetchedLessons.push(row);
             }
             // updates state only if the component is mounted:
             if (isSubscribed) {
@@ -136,8 +183,8 @@ function Content() {
         return (
             <SignedIn>
                 <NavigationBar/>
-                <p className="mt-20 mb-10 ml-20 font-semibold text-3xl lg:text-4xl text-black dark:text-white">📝 Uncompleted Lessons</p>
-                <div class="ml-20 flex flex-row">
+                <p className="mt-20 ml-20 font-semibold text-3xl lg:text-4xl text-black dark:text-white">📝 Uncompleted Lessons</p>
+                <div class="ml-20 flex flex-col">
                     {fetchData}
                 </div>
                 <Footer/>
