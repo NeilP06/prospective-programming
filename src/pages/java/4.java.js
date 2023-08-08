@@ -9,7 +9,7 @@ if (!process.env.REACT_APP_CLERK_PUBLISHABLE_KEY) {
 const key = process.env.REACT_APP_CLERK_PUBLISHABLE_KEY;
 const supabase = createClient(process.env.REACT_APP_SUPABASE_URL, process.env.REACT_APP_SUPABASE_KEY);
 
-export default function JavaThree() {
+export default function JavaFour() {
     document.body.classList.add("bg-slate-300", "dark:bg-gray-900");
     // following keys are initialized to fetch lesson data:
     const [ expected, setExpected ] = useState("");
@@ -21,7 +21,7 @@ export default function JavaThree() {
     useEffect(() => {
         const loadData = async(e) => {
             // sets data array to a variable:
-            const { data, error } = await supabase.from("java-lessons").select().eq("id", 3);
+            const { data, error } = await supabase.from("java-lessons").select().eq("id", 4);
             // throws an error if the data is corrupted:
             if (error) {
                 throw new Error("An error occured in relation to Supabase fetch.");
@@ -75,13 +75,13 @@ function ChangeStatus() {
             // fetches current status data to ensure no interference with completed lessons:
             const fetchData = async () => {
                 // fetches data:
-                const { data, error } = await supabase.from("users").select("java_three").eq("userId", user.id);
+                const { data, error } = await supabase.from("users").select("java_four").eq("userId", user.id);
                 // throws an error if a database error occurs:
                 if (error) {
                     throw new Error("An error occured in relation to Supabase fetch.", error);
                 }
                 // sets data to the `userStatus` variable:
-                setUserStatus(data[0].java_three);
+                setUserStatus(data[0].java_four);
             }
             // calls the function:
             fetchData();
@@ -91,7 +91,7 @@ function ChangeStatus() {
                 if (userStatus !== "Completed" && userStatus) {
                     const loadData = async () => {
                         // updates data and exports it as an error:
-                        const { error } = await supabase.from("users").update({ java_three: "In Progress" }).eq("userId", user.id);
+                        const { error } = await supabase.from("users").update({ java_four: "In Progress" }).eq("userId", user.id);
                         // throws an error if a database error occurs:
                         if (error) {
                             throw new Error("An error occurred in relation to Supabase update.", error);
@@ -117,7 +117,7 @@ function ChangeToCompletedStatus() {
         if (user) {
             const changeData = async () => {
                 // updates data and exports it as an error:
-                const { error } = await supabase.from("users").update({ java_three: "Completed" }).eq("userId", user.id);
+                const { error } = await supabase.from("users").update({ java_four: "Completed" }).eq("userId", user.id);
                 // throws an error if a database error occurs:
                 if (error) {
                     throw new Error("An error occured in relation to Supabase update.", error);

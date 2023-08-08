@@ -57,7 +57,7 @@ function Content() {
          * --> fetches unformatted data from the database.
          */
         async function fetchData(userId) {
-            const { data, error } = await supabase.from("users").select("java_one, java_two").eq("userId", userId);
+            const { data, error } = await supabase.from("users").select("java_one, java_two, java_three, java_four").eq("userId", userId);
             // checks if data is null before returning it:
             if (error) {
                 throw new Error("An error occurred in relation to Supabase fetch: Java data is not loading.");
@@ -70,7 +70,7 @@ function Content() {
                 if (data && data.length > 0) {
                     // TODO: make this dynamic...
                     const combinedData = data.reduce((result, item) => {
-                        result.push(item["java_one"], item["java_two"]);
+                        result.push(item["java_one"], item["java_two"], item["java_three"], item["java_four"]);
                         return result;
                     }, []);
                     setJavaData(combinedData);
@@ -97,6 +97,7 @@ function Content() {
             for (let i = data.length - 1; i >= 0; i--) {
                 if (javaData[i] === "Not Started" || javaData[i] === "In Progress") {
                     // appends data to temporary variable:
+                    console.log(data[i].id);
                     fetchedLessons.push(
                         <Link to={data[i].link}><Lesson lessonId={data[i].lessonId} lessonName={data[i].name} shortDescription={data[i].shortDescription} status={javaData[i]}/></Link>
                         
