@@ -9,7 +9,6 @@ import Redirect from "../elements/Redirect.element.js";
 import Warning from "../elements/Warning.element";
 const supabase = createClient(process.env.REACT_APP_SUPABASE_URL, process.env.REACT_APP_SUPABASE_KEY);
 
-
 if (!process.env.REACT_APP_CLERK_PUBLISHABLE_KEY) {
     throw new Error("An error occured in relation to Clerk: no key found.");
 }
@@ -41,7 +40,7 @@ function Content() {
     const [ javaData, setJavaData ] = useState([]);
     // redirects elgible users to the login page if they are not logged in:
     useEffect(() => {
-        // checs if the user has been redirected before by using local storage:
+        // checks if the user has been redirected before by using local storage:
         const hasBeenRedirected = sessionStorage.getItem("hasBeenRedirected");
         if ((!user && window.innerWidth > 800 && !hasBeenRedirected) || (!user && window.innerWidth > 800)) {
             // sets the flag to indicate redirection in local storage:

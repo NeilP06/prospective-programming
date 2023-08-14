@@ -8,7 +8,7 @@ import JavaOne from "./pages/java/1.java.js";
 import JavaTwo from "./pages/java/2.java.js";
 import JavaThree from "./pages/java/3.java.js";
 import JavaFour from "./pages/java/4.java.js";
-// import PracticeApp from "./pages/Practice.App.js";
+import PracticeApp from "./pages/Practice.App.js";
 import RegistrationApp from "./pages/Registration.App.js";
 
 const router = createBrowserRouter([
@@ -25,6 +25,10 @@ const router = createBrowserRouter([
     element: <LessonsApp/>
   },
   {
+    path: "practice",
+    element: <PracticeApp/>
+  },
+  {
     path: "java-lesson-one",
     element: <JavaOne/>
   }, {
@@ -37,10 +41,6 @@ const router = createBrowserRouter([
     path: "java-lesson-four",
     element: <JavaFour/>
   }
-  // {
-  //   path: "practice",
-  //   element: <PracticeApp/>
-  // },
 ]); 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

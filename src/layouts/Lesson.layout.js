@@ -7,7 +7,7 @@ import "ace-builds/src-noconflict/theme-twilight";
 import AceEditor from "react-ace";
 import Footer from "../elements/Footer.element.js";
 import NavigationBar from "../elements/NavigationBar.element.js";
-import React, { useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import Warning from "../elements/Warning.element.js";
 const { Configuration, OpenAIApi } = require("openai");
 
@@ -21,7 +21,7 @@ export default function LessonModule(props) {
     document.body.classList.add("bg-slate-300", "dark:bg-gray-900");
     // initializes a variable for a sticky state to the <IDE/> module & its children:
     const [ isSticky, setStickyness ] = useState(true);  
-    // gives cases for sticky vs. relative positioning for the sitcky-state variable.
+    // gives cases for sticky vs. relative positioning for the sitcky-state variable:
     useEffect(() => {
         const handleScroll = () => {
             // sticky offset stops at 5000px:
