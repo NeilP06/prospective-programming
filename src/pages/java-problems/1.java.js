@@ -1,6 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import { ClerkProvider, useUser } from "@clerk/clerk-react";
-import LessonModule from "../../layouts/Lesson.layout.js";
+import PracticeModule from "../../layouts/PracticeProblem.layout.js";
 import React, { useEffect, useState } from "react";
 
 if (!process.env.REACT_APP_CLERK_PUBLISHABLE_KEY) {
@@ -9,37 +9,28 @@ if (!process.env.REACT_APP_CLERK_PUBLISHABLE_KEY) {
 const key = process.env.REACT_APP_CLERK_PUBLISHABLE_KEY;
 const supabase = createClient(process.env.REACT_APP_SUPABASE_URL, process.env.REACT_APP_SUPABASE_KEY);
 
-
-/**
- * 
- * EVERYTHING NEEDS TO BE CHANGED!!!!!!!
- */
-
-
-
-
-export default function JavaTwo() {
+export default function JavaProblemOne() {
     document.body.classList.add("bg-slate-300", "dark:bg-gray-900");
     // following keys are initialized to fetch lesson data:
     const [ expected, setExpected ] = useState("");
-    const [ lessonContent, setLessonContent ] = useState("");
-    const [ lessonId, setLessonId ] = useState("");
-    const [ lessonName, setLessonName ] = useState("");
+    const [ practiceContent, setPracticeContent ] = useState("");
+    const [ practiceId, setPracticeId ] = useState("");
+    const [ practiceName, setPracticeName ] = useState("");
     const [ prompt, setPrompt ] = useState("");
     // loads lesson data from the database with a hook:
     useEffect(() => {
         const loadData = async(e) => {
             // sets data array to a variable:
-            const { data, error } = await supabase.from("java-lessons").select().eq("id", 1);
+            const { data, error } = await supabase.from("java-practice").select().eq("id", 1);
             // throws an error if the data is corrupted:
             if (error) {
                 throw new Error("An error occured in relation to Supabase fetch.");
             }
             // sets data to the following variables for later use:
             setExpected(data[0].expectedOutput);
-            setLessonContent(data[0].content);
-            setLessonId(data[0].lessonId);
-            setLessonName(data[0].name);
+            setPracticeContent(data[0].content);
+            setPracticeId(data[0].practiceId);
+            setPracticeName(data[0].name);
             setPrompt(data[0].lessonProblem);
         }
         loadData();
@@ -63,7 +54,7 @@ export default function JavaTwo() {
     return (
         <ClerkProvider publishableKey={key}>
             <ChangeStatus/>
-            <LessonModule expected={expected} lessonContent={lessonContent} lessonId={lessonId} lessonName={lessonName} prompt={prompt}  onSendData={handleParentData}/>
+            <PracticeModule expected={expected} practiceContent={practiceContent} practiceId={practiceId} practiceName={practiceName} prompt={prompt}  onSendData={handleParentData}/>
         </ClerkProvider>
     );
 }
@@ -84,13 +75,13 @@ function ChangeStatus() {
             // fetches current status data to ensure no interference with completed lessons:
             const fetchData = async () => {
                 // fetches data:
-                const { data, error } = await supabase.from("users").select("java_one").eq("userId", user.id);
+                const { data, error } = await supabase.from("users").select("java_p_one").eq("userId", user.id);
                 // throws an error if a database error occurs:
                 if (error) {
                     throw new Error("An error occured in relation to Supabase fetch.", error);
                 }
                 // sets data to the `userStatus` variable:
-                setUserStatus(data[0].java_one);
+                setUserStatus(data[0].java_p_one);
             }
             // calls the function:
             fetchData();
@@ -100,7 +91,7 @@ function ChangeStatus() {
                 if (userStatus !== "Completed" && userStatus) {
                     const loadData = async () => {
                         // updates data and exports it as an error:
-                        const { error } = await supabase.from("users").update({ java_one: "In Progress" }).eq("userId", user.id);
+                        const { error } = await supabase.from("users").update({ java_p_one: "In Progress" }).eq("userId", user.id);
                         // throws an error if a database error occurs:
                         if (error) {
                             throw new Error("An error occurred in relation to Supabase update.", error);
@@ -126,7 +117,7 @@ function ChangeToCompletedStatus() {
         if (user) {
             const changeData = async () => {
                 // updates data and exports it as an error:
-                const { error } = await supabase.from("users").update({ java_one: "Completed" }).eq("userId", user.id);
+                const { error } = await supabase.from("users").update({ java_p_one: "Completed" }).eq("userId", user.id);
                 // throws an error if a database error occurs:
                 if (error) {
                     throw new Error("An error occured in relation to Supabase update.", error);

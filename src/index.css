@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/**
+ * --> prevents scroll-bar from appearing on any single page.
+ */
 ::-webkit-scrollbar {
     display:none;
 }

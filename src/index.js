@@ -5,6 +5,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from './App';
 import LessonsApp from "./pages/Lessons.App.js";
 import JavaOne from "./pages/java/1.java.js";
+import JavaProblemOne from './pages/java-problems/1.java';
 import JavaTwo from "./pages/java/2.java.js";
 import JavaThree from "./pages/java/3.java.js";
 import JavaFour from "./pages/java/4.java.js";
@@ -40,6 +41,9 @@ const router = createBrowserRouter([
   }, {
     path: "java-lesson-four",
     element: <JavaFour/>
+  }, {
+    path: "java-practice-one",
+    element: <JavaProblemOne/>
   }
 ]); 
 

@@ -276,7 +276,7 @@ function Content() {
         };
     }, []); 
     // temporarily returns a indication element when user data is loading:
-    if (user && fetchData.length === 0) {
+    if (user && (fetchData.length + fetchCompletedData.length) <= 0) {
         return <p className="mt-5 ml-5 font-semibold text-black dark:text-white">User progress is loading...</p>;
     }
     if (user && window.innerWidth > 800) {
