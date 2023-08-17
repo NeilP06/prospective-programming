@@ -8,8 +8,8 @@ import JavaOne from "./pages/java/1.java.js";
 import JavaProblemOne from './pages/java-problems/1.java';
 import JavaProblemTwo from './pages/java-problems/2.java';
 import JavaProblemThree from './pages/java-problems/3.java';
-// import JavaProblemTwo from './pages/java-problems/2.java';
-// import JavaProblemTwo from './pages/java-problems/2.java';
+import JavaProblemFour from './pages/java-problems/4.java';
+import JavaProblemFive from './pages/java-problems/5.java';
 
 import JavaTwo from "./pages/java/2.java.js";
 import JavaThree from "./pages/java/3.java.js";
@@ -62,13 +62,14 @@ const router = createBrowserRouter([
     path: "java-practice-three",
     element: <JavaProblemThree/>
   }, 
-  // {
-  //   path: "java-practice-four",
-  //   element: <JavaProblemFour/>
-  // }, {
-  //   path: "java-practice-five",
-  //   element: <JavaProblemFive/>
-  // }
+  {
+    path: "java-practice-four",
+    element: <JavaProblemFour/>
+  }, 
+  {
+    path: "java-practice-five",
+    element: <JavaProblemFive/>
+  }
 ]); 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
