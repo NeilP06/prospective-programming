@@ -22,6 +22,9 @@ import JavaFour from "./pages/java/4.java.js";
 import JavaFive from "./pages/java/5.java.js";
 import JavaSix from "./pages/java/6.java.js";
 import JavaSeven from "./pages/java/7.java.js";
+import JavaEight from "./pages/java/8.java.js";
+import JavaNine from "./pages/java/9.java.js";
+import JavaTen from "./pages/java/10.java.js";
 // import ProspectiveProgramming learning hubs:
 import PracticeApp from "./pages/Practice.App.js";
 import RegistrationApp from "./pages/Registration.App.js";
@@ -70,6 +73,18 @@ const router = createBrowserRouter([
   {
     path: "java-lesson-seven",
     element: <JavaSeven/>
+  },
+  {
+    path: "java-lesson-eight",
+    element: <JavaEight/>
+  },
+  {
+    path: "java-lesson-nine",
+    element: <JavaNine/>
+  },
+  {
+    path: "java-lesson-ten",
+    element: <JavaTen/>
   },
   {
     path: "java-practice-one",

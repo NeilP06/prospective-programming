@@ -62,7 +62,7 @@ function Content() {
          * --> fetches unformatted data from the database.
          */
         async function fetchData(userId) {
-            const { data, error } = await supabase.from("users").select("java_one, java_two, java_three, java_four, java_five, java_six, java_seven").eq("userId", userId);
+            const { data, error } = await supabase.from("users").select("java_one, java_two, java_three, java_four, java_five, java_six, java_seven, java_eight, java_nine, java_ten").eq("userId", userId);
             // checks if data is null before returning it:
             if (error) {
                 throw new Error("An error occurred in relation to Supabase fetch: Java data is not loading.");
@@ -75,7 +75,7 @@ function Content() {
                 if (data && data.length > 0) {
                     // TODO: make this dynamic...
                     const combinedData = data.reduce((result, item) => {
-                        result.push(item["java_one"], item["java_two"], item["java_three"], item["java_four"], item["java_five"], item["java_six"], item["java_seven"]);
+                        result.push(item["java_one"], item["java_two"], item["java_three"], item["java_four"], item["java_five"], item["java_six"], item["java_seven"], item["java_eight"], item["java_nine"], item["java_ten"]);
                         return result;
                     }, []);
                     setJavaData(combinedData);
