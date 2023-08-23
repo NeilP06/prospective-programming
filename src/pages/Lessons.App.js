@@ -33,7 +33,7 @@ function Content() {
     // initializes variables used to fetch raw completed lessons data:
     const [ fetchCompletedData, setCompletedData ] = useState("");
     // initializes variables used to track the mounted state of data fetching:
-    const [isMounted, setIsMounted] = useState(false);
+    const [ isMounted, setIsMounted ] = useState(false);
     // initializes variables used to track the mounted state of completed data fetching:
     const [ isCompletedMounted, setIsCompletedMounted ] = useState(false);
     // initializes variables used to fetch formatted progress data:
@@ -65,7 +65,7 @@ function Content() {
             const { data, error } = await supabase.from("users").select("java_one, java_two, java_three, java_four, java_five, java_six, java_seven, java_eight, java_nine, java_ten").eq("userId", userId);
             // checks if data is null before returning it:
             if (error) {
-                throw new Error("An error occurred in relation to Supabase fetch: Java data is not loading.");
+                throw new Error("An error occurred in relation to Supabase fetch: Java data is not loading in Lessons.App.js.");
             }
             return data;
         }
@@ -93,22 +93,19 @@ function Content() {
         // variable is used to create rows to organize lesson modules:
         let lessonRows = [];
         // fetches lessons from the database:
-        const fetchLessons = async () => {
+        const fetchLessons = async() => {
             let fetchedLessons = [];
             const { data, error } = await supabase.from("java-lessons").select().order("id", { ascending: false });
             // throws an error in case if the data is corrupted or missing:
             if (error || data === null) {
-                throw new Error("An error occurred in relation to Supabase fetch: Java lessons data is not loading.");
+                throw new Error("An error occurred in relation to Supabase fetch: Java lessons data is not loading at Lessons.App.js.");
             }
             // fetches data from a for loop:
-            console.log(javaData);
             for (let i = 0; i < data.length; i++) {
                 if (javaData[i] === "Not Started" || javaData[i] === "In Progress") {
                     // fetches id from data:
                     const id = parseInt(data[i].id - 1);
                     // saves data to temporary variable:
-                    console.log(javaData[i] + " " + i);
-
                     const lessonComponent = (
                         <Link key={data[id].lessonId} to={data[id].link}>
                             <Lesson lessonId={data[id].lessonId} lessonName={data[id].name} shortDescription={data[id].shortDescription} status={javaData[i]}/>

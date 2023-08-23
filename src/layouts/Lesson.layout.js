@@ -197,7 +197,6 @@ function CheckCode(props) {
             props.onSendData(data);
         }
     };
-
     // returns <CheckCode/> + <Feedback/> modules:
     return (
         <div>

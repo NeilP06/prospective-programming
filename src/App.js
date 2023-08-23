@@ -1,6 +1,7 @@
 import { Analytics } from "@vercel/analytics/react";
 import { ArrowUpRight } from "lucide-react";
 import { ClerkProvider, SignedIn, SignedOut, useUser } from "@clerk/clerk-react";
+import { createClient } from "@supabase/supabase-js";
 import { Link } from "react-router-dom";
 import Footer from "./elements/Footer.element.js";
 import Greetings from "./elements/Greetings.element.js";
@@ -10,7 +11,9 @@ import Lesson from "./layouts/Lesson.button.js";
 import NavigationBar from "./elements/NavigationBar.element.js";
 import PracticeProblem from "./layouts/PracticeProblem.button.js";
 import Warning from "./elements/Warning.element.js";
-import React from "react";
+import React, { useEffect, useState } from "react";
+const supabase = createClient(process.env.REACT_APP_SUPABASE_URL, process.env.REACT_APP_SUPABASE_KEY);
+
 
 if (!process.env.REACT_APP_CLERK_PUBLISHABLE_KEY) {
   throw new Error(" no key ");
@@ -37,8 +40,93 @@ export default function App() {
 
 function Content() {
   const { user } = useUser(); 
-  const desc = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
   const login = <Link to="/login" class="flex justify-center text-blue-600">Log-in<ArrowUpRight class="mr-1 hover:text-blue-800" color="#1B64F1"/></Link>;
+  const [ fetchData, setFetchData ] = useState("");
+  // initializes variables used to track the mounted state of data fetching:
+  const [isMounted, setIsMounted] = useState(false);
+  // initializes variables used to fetch formatted progress data:
+  const [ javaData, setJavaData ] = useState([]);
+  useEffect(() => {
+    async function fetchData(userId) {
+      const { data, error } = await supabase.from("users").select("java_one, java_two, java_three, java_four, java_five, java_six, java_seven, java_eight, java_nine, java_ten").eq("userId", userId);
+      if (error) {
+        throw new Error("An error occured in relation to Supabase fetch: Java data is not loading in App.js.");
+      }
+      return data;
+    }
+    if (user) {
+      fetchData(user.id).then((data) => {
+        if (data && data.length > 0) {
+          const combinedData = data.reduce((result, item) => {
+            result.push(item["java_one"], item["java_two"], item["java_three"], item["java_four"], item["java_five"], item["java_six"], item["java_seven"], item["java_eight"], item["java_nine"], item["java_ten"]);
+            return result;
+          }, []);
+          setJavaData(combinedData);
+        } else {
+          setJavaData([]);
+        }
+      });
+    }
+  }, [user]);
+  useEffect(() => {
+    let isSubscribed = true;
+    let lessonRows = [];
+    const fetchLessons = async() => {
+      let fetchedLessons = [];
+      const { data, error } = await supabase.from("java-lessons").select().order("id", { ascending: false});
+      if (error || data === null) {
+        throw new Error("An error occured in relation to Supabase fetch: Java lessons data is not loading at App.js.");
+      }
+      for (let i = 0; i < data.length; i++) {
+        if (javaData[i] === "Not Started" || javaData[i] === "In Progress") {
+          const id = parseInt(data[i].id - 1);
+          const lessonComponent = (
+            <Link key={data[id].lessonId} to={data[id].link}>
+              <Lesson condition="homepage" lessonId={data[id].lessonId} lessonName={data[id].name} description={data[id].shortDescription} status={javaData[i]}/>    
+            </Link>
+          );
+          lessonRows.push(lessonComponent);
+          if (lessonRows.length === 4) {
+            const row = (
+              <div key={`row-${lessonRows.length}`} className="ml-20 m-4 flex flex-row">
+                {lessonRows}
+              </div>
+            );
+            lessonRows = [];
+            fetchedLessons.push(row);
+            break;
+          } else if (i === (data.length - 1)) {
+            const row = (
+              <div key={`row-${lessonRows.length}`} className="ml-20 m-4 flex flex-row">
+                {lessonRows}
+              </div>
+            );
+            lessonRows = [];
+            fetchedLessons.push(row);
+          }
+        }
+      }
+      if (isSubscribed) {
+        setFetchData(fetchedLessons);
+      }
+    };
+    if (isMounted) {
+      fetchLessons();
+    }
+    return () => {
+      isSubscribed = false;
+    };
+  }, [javaData, isMounted]);
+  useEffect(() => {
+    setIsMounted(true);
+    return () => {
+      // sets `isMounted` to false on component unmount:
+      setIsMounted(false);
+    };
+  }, []); 
+  if (user && (fetchData.length) <= 0) {
+    return <p className="mt-5 ml-5 font-semibold text-black dark:text-white">User progress is loading...</p>;
+  }
   if (user) {
     return (
       <SignedIn>
@@ -47,12 +135,7 @@ function Content() {
           <Greetings condition="registered" name={user.firstName}/>
           <div className="mt-24">
             <p className="mt-2 ml-20 font-semibold text-gray-800 dark:text-slate-200">Recommended Lessons for You</p>
-            <div className="ml-20 m-4 flex flex-row">
-              <Lesson href="https://neilp06.net" condition="homepage" lessonName="1.0 Intro to Java" description={desc} status="Not Started"/>
-              <Lesson condition="homepage" lessonName="1.1 Java Syntax" description={desc} status="In Progress..."/>
-              <Lesson condition="homepage" lessonName="1.2 Java Objects I" description={desc} status="Not Started"/>
-              <Lesson condition="homepage" lessonName="1.3 Java Objects II" description={desc} status="Not Started"/>
-            </div>
+            {fetchData}
           </div>
           <div className="mt-20">
             <p className="mt-2 ml-20 font-semibold text-gray-800 dark:text-slate-200">Practice Problems for You</p>
@@ -82,3 +165,4 @@ function Content() {
     );
   }
 }
+
