@@ -65,7 +65,7 @@ function Content() {
             const { data, error } = await supabase.from("users").select("java_p_one, java_p_two, java_p_three, java_p_four, java_p_five, java_p_six, java_p_seven, java_p_eight, java_p_nine").eq("userId", userId);
             // checks if data is null before returning it:
             if (error) {
-                throw new Error("An error occurred in relation to Supabase fetch: Java data is not loading.");
+                throw new Error("An error occurred in relation to Supabase fetch: Java data is not loading at Practice.App.js.");
             }
             return data;
         }
@@ -98,10 +98,9 @@ function Content() {
             const { data, error } = await supabase.from("java-practice").select().order("id", { ascending: false });
             // throws an error in case if the data is corrupted or missing:
             if (error || data === null) {
-                throw new Error("An error occurred in relation to Supabase fetch: Java practice problem data is not loading.");
+                throw new Error("An error occurred in relation to Supabase fetch: Java practice problem data is not loading at Practice.App.js.");
             }
             // fetches data from a for loop:
-            console.log(javaData);
             for (let i = 0; i < data.length; i++) {
                 if (javaData[i] === "Not Started" || javaData[i] === "In Progress") {
                     // fetches id from data:

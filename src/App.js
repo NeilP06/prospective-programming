@@ -43,9 +43,14 @@ function Content() {
   const login = <Link to="/login" class="flex justify-center text-blue-600">Log-in<ArrowUpRight class="mr-1 hover:text-blue-800" color="#1B64F1"/></Link>;
   const [ fetchData, setFetchData ] = useState("");
   // initializes variables used to track the mounted state of data fetching:
-  const [isMounted, setIsMounted] = useState(false);
+  const [ isMounted, setIsMounted ] = useState(false);
   // initializes variables used to fetch formatted progress data:
   const [ javaData, setJavaData ] = useState([]);
+
+  const [ fetchPracticeData, setFetchPracticeData ] = useState("");
+  const [ isPracticeMounted, setIsPracticeMounted ] = useState(false);
+  const [ javaPracticeData, setJavaPracticeData ] = useState([]);
+
   useEffect(() => {
     async function fetchData(userId) {
       const { data, error } = await supabase.from("users").select("java_one, java_two, java_three, java_four, java_five, java_six, java_seven, java_eight, java_nine, java_ten").eq("userId", userId);
@@ -124,6 +129,97 @@ function Content() {
       setIsMounted(false);
     };
   }, []); 
+
+
+
+
+
+  useEffect(() => {
+    async function fetchData(userId) {
+      const { data, error } = await supabase.from("users").select("java_p_one, java_p_two, java_p_three, java_p_four, java_p_five, java_p_six, java_p_seven, java_p_eight, java_p_nine").eq("userId", userId);
+      if (error) {
+        throw new Error("An error occured in relation to Supabase fetch: Java data is not loading at App.js");
+      }
+      return data;
+    }
+    if (user) {
+      fetchData(user.id).then((data) => {
+        if (data && data.length > 0) {
+          // TODO: make this dynamic...
+          const combinedData = data.reduce((result, item) => {
+            result.push(item["java_p_one"], item["java_p_two"], item["java_p_three"], item["java_p_four"], item["java_p_five"], item["java_p_six"], item["java_p_seven"], item["java_p_eight"], item["java_p_nine"]);
+            return result;
+          }, []);
+          setJavaPracticeData(combinedData);
+        } else {
+          // handles the case where no data is found for the user:
+          setJavaPracticeData([]);
+        }
+      });
+    }
+  }, [user]);
+  useEffect(() => {
+    let isSubscribed = true;
+    let practiceRows = [];
+    const fetchPracticeContent = async() => {
+      let fetchedPracticeContent = [];
+      const { data, error } = await supabase.from("java-practice").select().order("id", { ascending: false});
+      if (error || data === null) {
+        throw new Error("An error occured in relation to Supabase fetch: Java practice problem data is not loading at App.js.");
+      }
+      for (let i = 0; i < data.length; i++) {
+        if (javaPracticeData[i] === "Not Started" || javaPracticeData[i] === "In Progress") {
+          const id = parseInt(data[i].id - 1);
+          const practiceProblemComponent = (
+            <Link key={data[id].practiceId} to={data[id].link}>
+              <PracticeProblem condition="homepage" practiceId={data[id].practiceId} problemName={data[id].name} prerequisite={data[id].prerequisite} status={javaPracticeData[i]}/>
+            </Link>
+          );
+          practiceRows.push(practiceProblemComponent);
+          if (practiceRows.length === 4) {
+            const row = (
+              <div key={`row-${practiceRows.length}`} className="ml-20 m-4 flex flex-row">
+                {practiceRows}
+              </div>
+            );
+            practiceRows = [];
+            fetchedPracticeContent.push(row);
+            break;
+          } else if (i === (data.length - 1)) {
+            const row = (
+              <div key={`row-${practiceRows.length}`} className="ml-20 m-4 flex flex-row">
+                {practiceRows}
+              </div>
+            );
+            practiceRows = [];
+            fetchedPracticeContent.push(row);
+          }
+        }
+      }
+      if (isSubscribed) {
+        setFetchPracticeData(fetchedPracticeContent);
+      }
+    };
+    if (isPracticeMounted) {
+      fetchPracticeContent();
+    }
+    return () => {
+      isSubscribed = false;
+    };
+  }, [javaPracticeData, isPracticeMounted]);
+  useEffect(() => {
+    setIsPracticeMounted(true);
+    return () => {
+      setIsPracticeMounted(false);
+    }
+  }, []);
+
+
+
+
+
+
+
   if (user && (fetchData.length) <= 0) {
     return <p className="mt-5 ml-5 font-semibold text-black dark:text-white">User progress is loading...</p>;
   }
@@ -139,12 +235,7 @@ function Content() {
           </div>
           <div className="mt-20">
             <p className="mt-2 ml-20 font-semibold text-gray-800 dark:text-slate-200">Practice Problems for You</p>
-            <div className="ml-20 m-4 flex flex-row">
-              <PracticeProblem condition="homepage" problemName="Printing Madness!" prerequisite="1.0, 1.1" status="In Progress..."/>
-              <PracticeProblem condition="homepage" problemName="Printing Madness!" prerequisite="1.0, 1.1" status="Not Started"/>
-              <PracticeProblem condition="homepage" problemName="Printing Madness!" prerequisite="1.0, 1.1" status="Not Started"/>
-              <PracticeProblem condition="homepage" problemName="Printing Madness!" prerequisite="1.0, 1.1" status="Not Started"/>
-            </div>
+            {fetchPracticeData}
           </div>
         <Footer/>
       </SignedIn>
@@ -165,4 +256,3 @@ function Content() {
     );
   }
 }
-
