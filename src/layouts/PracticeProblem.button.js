@@ -10,6 +10,8 @@ export default function PracticeProblem(props) {
             result = props.problemName.substring(0, 6) + "..."; 
         }
         requirements = "Prerequisite: Lesson(s) " + props.prerequisite;
+    } else if (props.problemName.length > 13) {
+        result = props.problemName.substring(0, 10) + "...";
     } else {
         result = props.problemName;
     }

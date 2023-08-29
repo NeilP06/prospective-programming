@@ -50,7 +50,7 @@ function Content() {
   const [ fetchPracticeData, setFetchPracticeData ] = useState("");
   const [ isPracticeMounted, setIsPracticeMounted ] = useState(false);
   const [ javaPracticeData, setJavaPracticeData ] = useState([]);
-
+  // add comments soon
   useEffect(() => {
     async function fetchData(userId) {
       const { data, error } = await supabase.from("users").select("java_one, java_two, java_three, java_four, java_five, java_six, java_seven, java_eight, java_nine, java_ten").eq("userId", userId);
