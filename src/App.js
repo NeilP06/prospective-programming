@@ -274,12 +274,16 @@ function Content() {
   }, []);
   // placeholder text when the data is being fetched and rendered:
   if (user && (fetchData.length) <= 0) {
-    return <p className="mt-5 ml-5 font-semibold text-black dark:text-white">User progress is loading...</p>;
+    return (
+      <div>
+        <Initialization/>
+        <p className="mt-5 ml-5 font-semibold text-black dark:text-white">User progress is loading...</p>
+      </div>
+    );
   }
   if (user) {
     return (
       <SignedIn>
-        <Initialization/>
         <NavigationBar/>
           <Greetings condition="registered" name={user.firstName}/>
           <div className="mt-24">
