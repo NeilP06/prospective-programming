@@ -19,7 +19,7 @@ export default function Footer() {
                 <ul className="text-lg ml-2 leading-9 text-blue-800 dark:text-blue-200">
                     <li className="text-black dark:text-white"><b>Language:</b> English</li>
                     <li className="hover:underline"><a href="mailto:me@neilpuroh.it">Report a Problem</a></li>
-                    <li className="hover:underline">Contribute to ProspectiveProgramming</li>
+                    <li className="hover:underline"><a href="https://forms.gle/48dx7rJdbGMJQMKb9">Contribute to ProspectiveProgramming</a></li>
                 </ul>
             </div>
             <div className="w-96 mt-1 float-right">
