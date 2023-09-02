@@ -26,7 +26,7 @@ export default function LessonsApp() {
 function Content() {
     const { user } = useUser();   
     const navigate = useNavigate();
-    // initializes variables to determine if a completed section is needed later:
+    // initializes variables to determine if a completed section is needed later:       **********
     // const [ hasCompleted, setHasCompleted ] = useState("");                          **********
     // initializes variables used to fetch raw database data:
     const [ fetchData, setFetchData] = useState("");
@@ -69,7 +69,7 @@ function Content() {
             }
             return data;
         }
-        // combines unformmated data into an array:
+        // combines unformatted data into an array:
         if (user) {
             fetchData(user.id).then((data) => {
                 if (data && data.length > 0) {
@@ -100,7 +100,7 @@ function Content() {
             if (error || data === null) {
                 throw new Error("An error occurred in relation to Supabase fetch: Java lessons data is not loading at Lessons.App.js.");
             }
-            // fetches data from a for loop:
+            // fetches data from a for-loop:
             for (let i = 0; i < data.length; i++) {
                 if (javaData[i] === "Not Started" || javaData[i] === "In Progress") {
                     // fetches id from data:
@@ -167,7 +167,7 @@ function Content() {
         }
         // cleanup function to handle unmounting:
         return () => {
-            // unscribes to avoid state updates after unmounting:
+            // unsubscribes to avoid state updates after unmounting:
             isSubscribed = false;
         };
     }, [javaData, isMounted]);

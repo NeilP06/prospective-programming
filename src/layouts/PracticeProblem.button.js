@@ -3,6 +3,7 @@ import React from "react";
 export default function PracticeProblem(props) {
     let result = "";
     let requirements = "Prerequisite: Lesson(s) " + props.prerequisite;
+    const problemNameLength = "" + props.problemName;
     if (typeof props.problemName === "string" && window.innerWidth < 1160) {
         if (props.problemName.substring(5, 6) === " ") {
             result = props.problemName.substring(0, 5) + "...";
@@ -10,7 +11,7 @@ export default function PracticeProblem(props) {
             result = props.problemName.substring(0, 6) + "..."; 
         }
         requirements = "Prerequisite: Lesson(s) " + props.prerequisite;
-    } else if (props.problemName.length > 13) {
+    } else if (problemNameLength.length > 13) {
         result = props.problemName.substring(0, 10) + "...";
     } else {
         result = props.problemName;
