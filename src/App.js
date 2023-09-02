@@ -47,9 +47,11 @@ function Content() {
   const [ isMounted, setIsMounted ] = useState(false);
   // initializes variables used to fetch formatted lessons progress data:
   const [ javaData, setJavaData ] = useState([]);
-
+  // initializes variables used to fetch raw practice problem data:
   const [ fetchPracticeData, setFetchPracticeData ] = useState("");
+  // initializes variables used to track the mounted state of practice problem data fetching:
   const [ isPracticeMounted, setIsPracticeMounted ] = useState(false);
+  // initializes variables used to fetch formatted practice problem progress data:
   const [ javaPracticeData, setJavaPracticeData ] = useState([]);
   // fetches lessons progress from the database:
   useEffect(() => {
