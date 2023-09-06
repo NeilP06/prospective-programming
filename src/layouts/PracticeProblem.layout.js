@@ -121,7 +121,7 @@ function CheckCode(props) {
     const [ correct, setCorrect ] = useState(null);
     const [ hint, setHint ] = useState("");
     // sets-up OpenAI configuration:
-    const config = new Configuration({ apiKey: "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" });
+    const config = new Configuration({ apiKey: process.env.REACT_APP_OPENAI_API_KEY });
     const openai = new OpenAIApi(config);
     // deletes "User-Agent" to avoid runtime errors:
     delete config.baseOptions.headers['User-Agent'];

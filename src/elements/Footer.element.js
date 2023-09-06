@@ -20,10 +20,11 @@ export default function Footer() {
                     <li className="text-black dark:text-white"><b>Language:</b> English</li>
                     <li className="hover:underline"><a href="mailto:me@neilpuroh.it">Report a Problem</a></li>
                     <li className="hover:underline">Contribute to ProspectiveProgramming</li>
+                    <li className="hover:underline"><a href="https://forms.gle/48dx7rJdbGMJQMKb9">Contribute to ProspectiveProgramming</a></li>
                 </ul>
             </div>
             <div className="w-96 mt-1 float-right">
-                <p className="text-lg font-medium text-black dark:text-white">ProspectiveProgramming is an open-source educational platform that offers intro-level courses for free. We are a community built on openness and accessibility for all, and we show this with every aspect of our app.</p>
+                <p className="text-lg font-medium text-black dark:text-white">ProspectiveProgramming is a <i>501(c)(3)</i> not-for-profit organization that vows to teach computer science fundamentals to kids throughout the world. Thank you for being a part of the movement!</p>
             </div>
         </div>
     );
