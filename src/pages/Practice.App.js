@@ -69,7 +69,7 @@ function Content() {
             }
             return data;
         }
-        // combines unformmated data into an array:
+        // combines unformatted data into an array:
         if (user) {
             fetchData(user.id).then((data) => {
                 if (data && data.length > 0) {
@@ -106,8 +106,6 @@ function Content() {
                     // fetches id from data:
                     const id = parseInt(data[i].id - 1);
                     // saves data to temporary variable:
-                    console.log(javaData[i] + " " + i);
-
                     const practiceComponent = (
                         <Link key={data[id].practiceId} to={data[id].link}>
                             <PracticeProblem practiceId={data[id].practiceId} practiceName={data[id].name} prerequisite={data[id].prerequisite} status={javaData[i]}/>
@@ -169,7 +167,7 @@ function Content() {
         }
         // cleanup function to handle unmounting:
         return () => {
-            // unscribes to avoid state updates after unmounting:
+            // unsubscribes to avoid state updates after unmounting:
             isSubscribed = false;
         };
     }, [javaData, isMounted]);
