@@ -28,6 +28,8 @@ import JavaTen from "./pages/java/10.java.js";
 // import ProspectiveProgramming learning hubs:
 import PracticeApp from "./pages/Practice.App.js";
 import RegistrationApp from "./pages/Registration.App.js";
+// imports Test pages:
+import TestApp from "./pages/Test.App.js";
 
 const router = createBrowserRouter([
   {
@@ -45,6 +47,10 @@ const router = createBrowserRouter([
   {
     path: "practice",
     element: <PracticeApp/>
+  },
+  {
+    path: "test",
+    element: <TestApp/>
   },
   {
     path: "java-lesson-one",

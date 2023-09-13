@@ -1,20 +1,23 @@
 const { Translate } = require("@google-cloud/translate").v2;
+
 // TODO: fix .env code
-console.log(process.env.CREDENTIALS);
-const key = JSON.parse(process.env.CREDENTIALS);
+const key = process.env.CREDENTIALS;
 
 const translate = new Translate({
     credentials: key,
-    projectId: key.project_id
+    projectId: "prospectiveprogramming"
 });
 
 const detectLanguage = async(t) => {
     try {
-        let response = await translate.detect(t);
-        return response[0].language;
+        let [detections] = await translate.detect(t);
+        detections = Array.isArray(detections) ? detections : [detections];
+        console.log('Detections:');
+        detections.forEach(detection => {
+          console.log(`${detection.input} => ${detection.language}`);
+        });
     } catch (e) {
-        throw new Error("An error occured in relation to Translate", e);
-        return 0;
+        throw new Error("An error occured in relation to Translate:", e);
     }
 }
 
