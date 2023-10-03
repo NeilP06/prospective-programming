@@ -1,4 +1,6 @@
+import React from "react";
 const { Translate } = require('@google-cloud/translate').v2;
+// TODO: find a way to hide this effectively...
 const cred = {
     "type": "service_account",
     "project_id": "prospectiveprogramming",
@@ -18,24 +20,32 @@ const translate = new Translate({
     projectId: cred.project_id
 });
 
-const detectLanguage = async(t) => {
-    try {
-        let response = await translate.detect(t);
-        return response[0].language;
-    } catch (e) {
-        throw new Error("An error occured in `translate.js`: ", e);
+export default function TranslateText(props) {
+    let text = props.text;
+    let language = props.originalLanguage;
+    let newLanguage = props.toTranslateTo;
+    if (confirmLanguage(text) !== language) {
+        throw new Error("An error occured in relation to TranslateText() function: an error occured in the parameters.");
     }
+    const translateLanguage = async(t, targetLanguage) => {
+        try {
+            let [ response ] = await translate.translate(t, targetLanguage);
+            return response;
+        } catch (e) {
+            throw new Error("An error occured to Google Translate: translateLanguage() function does not work.");
+        }
+    };
+    return translateLanguage(text, newLanguage);
 }
 
-const translateLanguage = async(t, targetLanguage) => {
-    try {
-        let [ response ] = await translate.translate(t, targetLanguage);
-        return response;
-    } catch (e) {
-        throw new Error("An error occured in `translate.js`: ", e);
-    }
-};
-
-// TO-DO: implement a translate function for Spanish/French (practice problems/lessons).
-translateLanguage("Talofa, o a'u o Neil!", "en").then((res) => { console.log(res); }).catch((e) => { throw new Error("An occured occured at detectLanguage(): ", e); });
-
+function confirmLanguage(props) {
+   const detectLanguage = async(text) => {
+        try {
+            let response = await translate.detect(text);
+            return response[0].language;
+        } catch (e) {
+            throw new Error("An error occured in relation to Google Translate: detectLanguage() function does not work.");
+        }
+   } 
+   return detectLanguage(props.text);
+}
