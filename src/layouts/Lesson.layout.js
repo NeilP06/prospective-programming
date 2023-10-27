@@ -164,11 +164,12 @@ function CheckCode(props) {
             // sends the code written as a parameter:
             code: props.code,
             // if valid, will also send an input to check the code (TO-DO: make sure that the compiler will accept input next time):
-            input: "haha no",
+            input: "",
         }).then((res) => {
             if (res.data.output) {
                 // checks if code is correct and will give a final assignment as a result:
                 console.log(res.data.output === props.expected + "\n");
+                console.log(res.data.output, props.expected);
                 const isCorrect = res.data.output === props.expected + "\n";
                 setCorrect(isCorrect);
                 if (isCorrect === false) {
