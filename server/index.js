@@ -16,7 +16,8 @@ app.post("/compile", (req, res) => {
     };
     var config = {
         method: 'post',
-        url: 'https://api.codex.jaagrav.in',
+        // note changes in url: https://api.codex.jaagrav.in --> https://codex-api.fly.dev/
+        url: 'https://codex-api.fly.dev/',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
         },
