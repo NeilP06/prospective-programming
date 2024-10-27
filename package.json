@@ -10,6 +10,7 @@
     "@testing-library/user-event": "^13.5.0",
     "@vercel/analytics": "^1.0.1",
     "ace-builds": "^1.23.4",
+    "axios": "^1.5.1",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "flowbite": "^1.7.0",
@@ -23,12 +24,14 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.14.1",
     "react-scripts": "^5.0.1",
+    "react-select": "^5.7.7",
     "realm-web": "^2.0.0",
+    "util": "^0.12.5",
     "uuid": "^9.0.0",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "concurrently \"react-scripts --openssl-legacy-provider start\" \"node server/index.js\"",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -52,6 +55,7 @@
     ]
   },
   "devDependencies": {
+    "concurrently": "^8.2.2",
     "tailwindcss": "^3.3.2"
   }
 }

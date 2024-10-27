@@ -5,6 +5,7 @@ import "ace-builds/src-noconflict/theme-github";
 import "ace-builds/src-noconflict/theme-solarized_dark";
 import "ace-builds/src-noconflict/theme-twilight";
 import AceEditor from "react-ace";
+import Axios from "axios";
 import Footer from "../elements/Footer.element.js";
 import NavigationBar from "../elements/NavigationBar.element.js";
 import React, { useEffect, useState } from "react";
@@ -133,14 +134,9 @@ function IDE(props) {
  * --> creates module with unit test checking capabilities.
  */
 function CheckCode(props) {
-    // variables for OpenAI feedback to export:
+    // variables for GPT-3.5/compiler feedback to export:
     const [ correct, setCorrect ] = useState(null);
     const [ hint, setHint ] = useState("");
-    // sets-up OpenAI configuration:
-    const config = new Configuration({ apiKey: process.env.REACT_APP_OPENAI_API_KEY });
-    const openai = new OpenAIApi(config);
-    // deletes "User-Agent" to avoid runtime errors:
-    delete config.baseOptions.headers['User-Agent'];
     /**
      * @param {*} f (i.e. function)
      * @param {*} delay 
@@ -161,31 +157,46 @@ function CheckCode(props) {
      * @param {*} e 
      * --> sends OpenAI request and fetches GPT feedback (also changes values for `correct` & `hint`).
      */
-    const handleSubmit = async(e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
-        try {
-            const result = await openai.createChatCompletion({
-                model: "gpt-3.5-turbo",
-                messages: [
-                    {
-                        role: "user",
-                        content: props.code,
-                    },
-                    {
-                        role: "system",
-                        content: `You are a computer science professor who is grading my Java code, and you grade with strict conditions (even one little syntax error is pointed out). You have this unit test case: ${props.expected} that should come from this code. In addition, please send the feedback in this JSON format: "correct", a true/false value if the code matches the unit test, and "hint" which gives the user a hint if their code is wrong (otherwise initialize this to an empty string). Remember to ignore all comments. Please do not give any response other than the JSON.`,
-                    },
-                ],
-                temperature: 0.1
-            });
-            const codeData = JSON.parse(result.data.choices[0].message.content);
-            setCorrect(codeData.correct);
-            setHint(codeData.hint);
-        } catch (e) {
-            throw new Error("An error occured in relation to OpenAI's API.", e);
-        }
+        // sends a POST request to the compiler endpoint to check answers:
+        Axios.post(`http://localhost:8000/compile`, {
+            // sends the code written as a parameter:
+            code: props.code,
+            // if valid, will also send an input to check the code (TO-DO: make sure that the compiler will accept input next time):
+            input: "",
+        }).then((res) => {
+            if (res.data.output) {
+                // checks if code is correct and will give a final assignment as a result:
+                console.log(res.data.output === props.expected + "\n");
+                console.log(res.data.output, props.expected);
+                const isCorrect = res.data.output === props.expected + "\n";
+                setCorrect(isCorrect);
+                if (isCorrect === false) {
+                    // calls GPT-3.5 feedback function and sets `hint` to the feedback returned:
+                    aiFeedback(props.code, props.expected).then((aiHint) => {
+                        setHint(aiHint);
+                    }).catch((error) => {
+                        console.error("An error occurred in relation to compiler endpoint:", error);
+                    });
+                }
+                // prints compiler feedback to the console for potential debugging issues:
+                console.log("TASK EXECUTED: ", res.data.output);
+            } else {
+                // sets `correct` to false to still provide feedback back to the user
+                setCorrect(false);
+                // calls GPT-3.5 feedback function and sets `hint` to the feedback returned:
+                aiFeedback(props.code, props.expected).then((aiHint) => {
+                    setHint(aiHint);
+                }).catch((error) => {
+                    console.error("An error occurred in relation to compiler endpoint:", error);
+                });
+                // prints the compiler feedback to the console if there is an error:
+                console.log("TASK ERROR: ", res.data.error);
+            }
+        });
     }
-    // gives 2000ms delay to each OpenAI request:
+    // gives 2000ms delay to each OpenAI/compiler request:
     const throttledSubmit = throttle(handleSubmit, 2000);
     /**
      * @param {*} data 
@@ -209,6 +220,44 @@ function CheckCode(props) {
 }
 
 /**
+ * @param {*} userCode 
+ * @param {*} expected 
+ * @returns codeData.hint
+ * --> gives GPT-3.5 feedback for an incorrect entry.
+ */
+async function aiFeedback(userCode, expected) {
+    // sets-up OpenAI configuration:
+    const config = new Configuration({ apiKey: process.env.REACT_APP_OPENAI_API_KEY });
+    const openai = new OpenAIApi(config);
+    // deletes "User-Agent" to avoid runtime errors:
+    delete config.baseOptions.headers['User-Agent'];
+    // uses GPT-3.5 to give feedback back to the user (only in cases where the user code is wrong):
+    try {
+        const result = await openai.createChatCompletion({
+            model: "gpt-3.5-turbo",
+            messages: [
+                {
+                    role: "user",
+                    content: userCode,
+                },
+                {
+                    role: "system",
+                    content: `You are a computer science professor who is grading my Java code, and you grade with strict conditions (even one little syntax error is pointed out). You have this unit test case: ${expected} that should come from this code. In addition, please send the feedback in this JSON format: "correct", a true/false value if the code matches the unit test, and "hint" which gives the user a hint if their code is wrong (otherwise initialize this to an empty string). Remember to ignore all comments. Please do not give any response other than the JSON.`,
+                },
+            ],
+            // minimizes the variance of GPT-3.5 feedback:
+            temperature: 0.1
+        });
+        // saves feedback as a JSON variable for further manipulation:
+        const codeData = JSON.parse(result.data.choices[0].message.content);
+        // returns the GPT-3.5 feedback in terms of the hint it provides:
+        return codeData.hint;
+    } catch (e) {
+        throw new Error("An error occured in relation to OpenAI's API.", e);
+    }
+}
+    
+/**
  * @param {correct, hint} props 
  * @returns <Feedback/>
  * --> creates module that displays feedback to the user.
@@ -226,11 +275,21 @@ function Feedback(props) {
     };
     // checks if user code is incorrect before creating module:
     if (props.correct === false) {
-        return (
-            <div className="px-7 py-2 mt-5 mr-10 w-[500px] border-2 border-amber-500 rounded-md bg-amber-700">
-                <p className="text-amber-500">⚠️ {props.hint}</p>
-            </div>
-        );
+        if (!props.hint) {
+            // returns a loading message when awaiting for GPT feedback:
+            return (
+                <div className="px-7 py-2 mt-5 mr-10 w-[500px] border-2 border-neutral-400 rounded-md bg-neutral-700">
+                    <p className="text-neutral-400">⏳ AI does not have any feedback for the moment. Please wait or make changes to your code.</p>
+                </div>
+            );
+        } else {
+            // returns GPT feedback for the user to learn and make changes:
+            return (
+                <div className="px-7 py-2 mt-5 mr-10 w-[500px] border-2 border-amber-500 rounded-md bg-amber-700">
+                    <p className="text-amber-500">⚠️ {props.hint}</p>
+                </div>
+            );
+        }
     } else if (props.correct === true) {
         // creates the chain of callbacks to send data back to parent:
         const sendDataToParent = () => {

@@ -29,6 +29,7 @@ import JavaTen from "./pages/java/10.java.js";
 import PracticeApp from "./pages/Practice.App.js";
 import RegistrationApp from "./pages/Registration.App.js";
 
+// routes all files to a certain page name (dictated by what the `path` name is):
 const router = createBrowserRouter([
   {
     path: "/",
@@ -123,9 +124,9 @@ const router = createBrowserRouter([
     element: <JavaProblemNine/>    
   }
 ]); 
-
+// saves the application as a variable:
 const root = ReactDOM.createRoot(document.getElementById('root'));
-
+// renders `root` to get results for the homepage:
 root.render(
   <React.StrictMode>
     <RouterProvider router={router}/>
